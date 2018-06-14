@@ -9,7 +9,14 @@ const server = http.createServer((request, response) => {
       response.writeHead(500)
       response.end('Integration failed: ' + stdout + stderr)
     } else {
-      response.end('Integration OK: ' + stdout)
+      childProcess.exec('ssh ubuntu@54.154.61.33 && cd tek-tank-demo && git pull', (error, stdout2, stderr2) => {
+        if (error) {
+          response.writeHead(500)
+          response.end('Deployment failed: ' + stdout2 + stderr2)
+        } else {
+          response.end('Integration OK: ' + stdout + '\nDeployment OK: ' + stdout2)
+        }
+      })
     }
   })
 })
